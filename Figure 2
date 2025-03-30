@@ -1,0 +1,68 @@
+import matplotlib.pyplot as plt
+
+# Dictionary of studies and their mulch depths
+mulch_data = {
+    "Arnold et al. (2005)": [0, 7.6, 15.2, 22.9],
+    "Bartley et al. (2016)": [0, 5.1, 10.2],
+    "Billeaud and Zajicek (1989a)": [0, 5, 10, 15],
+    "Foshee et al. (1996)": [0, 10, 20, 30],
+    "Gilman and Grabosky (2004)": [0, 8, 16],
+    "Greenly and Rakow (1995)": [0, 7.5, 15, 25],
+    "Hild and Morgan (1993)": [0, 7.5, 15],
+    "Pellett and Heleba (1995)": [0, 5, 10, 15],
+    "Richardson et al. (2008)": [0, 3.8, 7.6],
+    "Stafne et al. (2009)": [0, 5.08, 10.16, 15.24],
+    "Sun et al. (2023)": [0, 5, 10, 20]
+}
+
+# Sort studies alphabetically
+sorted_studies = sorted(mulch_data.keys())
+
+# Create x and y lists for plotting
+x = []
+y = []
+
+for i, study in enumerate(sorted_studies):
+    depths = mulch_data[study]
+    x.extend([i] * len(depths))
+    y.extend(depths)
+
+# Categorize points by mulch depth
+control_x, control_y = [], []
+under_x, under_y = [], []
+over_x, over_y = [], []
+
+for xi, yi in zip(x, y):
+    if yi == 0:
+        control_x.append(xi)
+        control_y.append(yi)
+    elif 0 < yi <= 10.0001:
+        under_x.append(xi)
+        under_y.append(yi)
+    else:
+        over_x.append(xi)
+        over_y.append(yi)
+
+# Plot
+plt.figure(figsize=(10, 6))
+
+# Scatter points
+plt.scatter(control_x, control_y, color='black', label='Control')
+plt.scatter(under_x, under_y, color='green', label='Under maximum mulch depth')
+plt.scatter(over_x, over_y, color='red', label='Over maximum mulch depth')
+
+# Red horizontal line at 10 cm
+plt.axhline(y=10, color='red', linestyle='--', linewidth=1, label='Maximum Recommended Depth (10 cm)')
+
+# Axis labels and ticks
+plt.xticks(ticks=range(len(sorted_studies)), labels=sorted_studies, rotation=45, ha='right')
+plt.ylabel("Mulch Depth (cm)")
+plt.xlabel("Study")
+plt.grid(False)
+plt.tight_layout()
+
+# Legend
+plt.legend(loc='upper right')
+
+# Show plot
+plt.show()
