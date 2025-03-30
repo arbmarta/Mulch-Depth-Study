@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 # Dictionary of studies and their mulch depths
 mulch_data = {
     "Arnold et al. (2005)": [0, 7.6, 15.2, 22.9],
-    "Bartley et al. (2016)": [0, 5.1, 10.2],
+    "Bartley et al. (2016)": [0, 5.1, 10.16],
     "Billeaud and Zajicek (1989a)": [0, 5, 10, 15],
     "Foshee et al. (1996)": [0, 10, 20, 30],
     "Gilman and Grabosky (2004)": [0, 8, 16],
@@ -36,7 +36,7 @@ for xi, yi in zip(x, y):
     if yi == 0:
         control_x.append(xi)
         control_y.append(yi)
-    elif 0 < yi <= 10.0001:
+    elif 0 < yi <= 10.16:
         under_x.append(xi)
         under_y.append(yi)
     else:
@@ -48,11 +48,11 @@ plt.figure(figsize=(10, 6))
 
 # Scatter points
 plt.scatter(control_x, control_y, color='black', label='Control')
-plt.scatter(under_x, under_y, color='green', label='Under maximum mulch depth')
-plt.scatter(over_x, over_y, color='red', label='Over maximum mulch depth')
+plt.scatter(under_x, under_y, color='green', label='Within recommended mulch depth (2-4 in.)')
+plt.scatter(over_x, over_y, color='red', label='Over maximum recommended mulch depth (>4 in.)')
 
 # Red horizontal line at 10 cm
-plt.axhline(y=10, color='red', linestyle='--', linewidth=1, label='Maximum Recommended Depth (10 cm)')
+plt.axhline(y=10.16, color='red', linestyle='--', linewidth=1, label='Maximum Recommended Depth (4 in.)', zorder=0)
 
 # Axis labels and ticks
 plt.xticks(ticks=range(len(sorted_studies)), labels=sorted_studies, rotation=45, ha='right')
@@ -63,6 +63,8 @@ plt.tight_layout()
 
 # Legend
 plt.legend(loc='upper right')
+
+plt.savefig("Figure 2.png", dpi=900, bbox_inches='tight')
 
 # Show plot
 plt.show()
