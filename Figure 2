@@ -57,7 +57,6 @@ plt.axhline(y=10.16, color='red', linestyle='--', linewidth=1, label='Maximum Re
 # Axis labels and ticks
 plt.xticks(ticks=range(len(sorted_studies)), labels=sorted_studies, rotation=45, ha='right')
 plt.ylabel("Mulch Depth (cm)")
-plt.xlabel("Study")
 plt.grid(False)
 plt.tight_layout()
 
