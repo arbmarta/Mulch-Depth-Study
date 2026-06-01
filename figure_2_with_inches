@@ -1,0 +1,103 @@
+import matplotlib.pyplot as plt
+
+# Dictionary of studies and their mulch depths (cm)
+mulch_data = {
+    "Arnold et al. (2005)": [0, 7.6, 15.2, 22.9],
+    "Bartley et al. (2016)": [0, 5.1, 10.16],
+    "Billeaud and Zajicek (1989a)": [0, 5, 10, 15],
+    "Foshee et al. (1996)": [0, 10, 20, 30],
+    "Gilman and Grabosky (2004)": [0, 8, 16],
+    "Greenly and Rakow (1995)": [0, 7.5, 15, 25],
+    "Hild and Morgan (1993)": [0, 7.5, 15],
+    "Pellett and Heleba (1995)": [0, 5, 10, 15],
+    "Richardson et al. (2008)": [0, 3.8, 7.6],
+    "Stafne et al. (2009)": [0, 5.08, 10.16, 15.24],
+    "Sun et al. (2023)": [0, 5, 10, 20]
+}
+
+# Sort studies alphabetically
+sorted_studies = sorted(mulch_data.keys())
+
+# Create x and y lists for plotting
+x = []
+y = []
+
+for i, study in enumerate(sorted_studies):
+    depths = mulch_data[study]
+    x.extend([i] * len(depths))
+    y.extend(depths)
+
+# Categorize points by mulch depth
+control_x, control_y = [], []
+under_x, under_y = [], []
+over_x, over_y = [], []
+
+for xi, yi in zip(x, y):
+    if yi == 0:
+        control_x.append(xi)
+        control_y.append(yi)
+    elif 0 < yi <= 10.16:
+        under_x.append(xi)
+        under_y.append(yi)
+    else:
+        over_x.append(xi)
+        over_y.append(yi)
+
+# Create figure and primary axis
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Scatter points
+ax.scatter(control_x, control_y, color='black', label='Control')
+ax.scatter(
+    under_x, under_y,
+    color='green',
+    label='Within recommended mulch depth (2-4 in.)'
+)
+ax.scatter(
+    over_x, over_y,
+    color='red',
+    label='Exceeds recommended mulch depth (>4 in.)'
+)
+
+# Horizontal line at 10.16 cm = 4 in.
+ax.axhline(
+    y=10.16,
+    color='red',
+    linestyle='--',
+    linewidth=1,
+    label='Maximum Recommended Depth (4 in.)',
+    zorder=0
+)
+
+# Primary axis labels and ticks (cm)
+ax.set_xticks(range(len(sorted_studies)))
+ax.set_xticklabels(sorted_studies, rotation=45, ha='right')
+ax.set_ylabel("Mulch Depth (cm)")
+
+# Secondary y-axis in inches
+def cm_to_in(cm):
+    return cm / 2.54
+
+def in_to_cm(inches):
+    return inches * 2.54
+
+ax2 = ax.secondary_yaxis('right', functions=(cm_to_in, in_to_cm))
+ax2.set_ylabel("Mulch Depth (in.)")
+
+cm_min, cm_max = ax.get_ylim()
+inch_max = cm_to_in(cm_max)
+
+# Even-numbered inch ticks only
+even_inch_ticks = range(0, int(inch_max) + 2, 2)
+ax2.set_yticks(even_inch_ticks)
+
+# Clean up
+ax.grid(False)
+ax.legend(loc='upper right')
+fig.tight_layout()
+
+# Save at high resolution
+plt.savefig("Figure 2.png", dpi=900, bbox_inches='tight')
+
+# Show plot
+plt.show()
