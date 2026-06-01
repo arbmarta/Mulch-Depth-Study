@@ -1,0 +1,121 @@
+import matplotlib.pyplot as plt
+
+# Publication counts by year
+pubs = {
+    1989: 1,
+    1993: 1,
+    1995: 2,
+    1996: 1,
+    2004: 1,
+    2005: 1,
+    2008: 1,
+    2009: 1,
+    2016: 1,
+    2023: 1
+}
+
+# Timeline range
+start_year = 1985
+end_year = 2025
+
+# Figure
+fig, ax = plt.subplots(figsize=(16, 4), dpi=600)
+
+# Main timeline
+ax.hlines(0, start_year, end_year, color='black', linewidth=2, zorder=0)
+
+# Years to label and tick
+label_years = [start_year] + sorted(pubs.keys()) + [end_year]
+
+# Tick marks only for labeled years
+for year in label_years:
+    ax.vlines(year, -0.05, 0.05, color='black', linewidth=1, zorder=0)
+
+# Year labels
+for year in label_years:
+    if year in [start_year, end_year]:
+        ax.text(
+            year, -0.18, str(year),
+            ha='center',
+            va='top',
+            fontsize=16,
+            rotation=0,
+            fontweight='bold'
+        )
+    else:
+        # Right-align so the last digit sits under the tick mark
+        ax.text(
+            year, -0.1, str(year),
+            ha='right',
+            va='center',
+            fontsize=16,
+            rotation=45,
+            rotation_mode='anchor'
+        )
+
+# Bubble heights
+base_height = 0.5
+elevated_height = 0.75
+
+sorted_years = sorted(pubs.keys())
+bubble_y = {}
+
+for i, year in enumerate(sorted_years):
+    # Elevate if adjacent to previous publication year
+    if i > 0 and year - sorted_years[i - 1] == 1:
+        bubble_y[year] = elevated_height
+    else:
+        bubble_y[year] = base_height
+
+bubble_colour = '#009E9A'  # teal
+
+# Plot bubbles and labels
+for year, count in pubs.items():
+    y = bubble_y[year]
+
+    # Connector line behind circle
+    ax.plot(
+        [year, year],
+        [0.05, y - 0.09],
+        linestyle='--',
+        color='black',
+        linewidth=1,
+        zorder=1
+    )
+
+    # Bubble
+    ax.scatter(
+        year,
+        y,
+        s=1200,
+        color=bubble_colour,
+        zorder=3
+    )
+
+    # Count label
+    ax.text(
+        year,
+        y,
+        str(count),
+        color='white',
+        fontsize=20,
+        fontweight='bold',
+        ha='center',
+        va='center',
+        zorder=4
+    )
+
+# Formatting
+ax.set_xlim(start_year - 0.5, end_year + 0.5)
+ax.set_ylim(-0.4, 1.5)
+ax.set_xticks([])
+ax.set_yticks([])
+
+for spine in ax.spines.values():
+    spine.set_visible(False)
+
+plt.tight_layout()
+
+# Save high-resolution output
+plt.savefig("paper_timeline.png", dpi=600, bbox_inches='tight')
+plt.show()
